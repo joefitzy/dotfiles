@@ -60,6 +60,11 @@ if status is-interactive
         abbr -a vukamodels 'cd $VUKAHEAVY/vuka-models'
     end
 
+    if test -d $HOME/dev/janus
+        set -Ux JANUS $HOME/dev/janus
+        abbr -a janus 'cd $JANUS'
+    end
+
     # Docker
     abbr -a d docker
     abbr -a dc docker-compose
@@ -98,6 +103,8 @@ if status is-interactive
     abbr -a gchm 'git checkout main'
     abbr -a gch- 'git checkout -'
     abbr -a gchpoetry 'git checkout master -- poetry.lock'
+
+    abbr -a gcl 'git clean -fdx'
 
     abbr -a gcm 'git commit -m'
     abbr -a gcam 'git commit -am'
