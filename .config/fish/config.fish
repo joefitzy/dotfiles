@@ -83,7 +83,7 @@ if status is-interactive
     type -q virtualenv; and abbr -a nvenv 'virtualenv -p (pyenv version-name) .venv'
 
     if type -q exa >/dev/null
-        abbr -a ls exa
+        abbr -a ls exae
         abbr -a ll 'exa -la --icons --group-directories-first'
         abbr -a lt 'exa -la --icons --group-directories-first --tree --level=2'
     else
