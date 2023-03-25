@@ -62,7 +62,11 @@ if status is-interactive
 
     if test -d $HOME/dev/janus
         set -Ux JANUS $HOME/dev/janus
-        abbr -a janus 'cd $JANUS'
+        abbr -a j 'cd $JANUS'
+        abbr -a j0 'cd $JANUS/janus-auth0'
+        abbr -a jad 'cd $JANUS/janus-admin'
+        abbr -a jap 'cd $JANUS/janus-api'
+        abbr -a jf 'cd $JANUS/janus-front'
     end
 
     # Docker
