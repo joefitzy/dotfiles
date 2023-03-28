@@ -1,30 +1,18 @@
 import os
 import subprocess
-from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 
-def update_ruff(venv_path):
-    #  call subprocess: pip install -U ruff
-    with source_venv(venv_path):
-        pass
-
-@contextmanager
-def source_venv(venv_path):
+# @contextmanager
+def update_venv(venv_path):
     # call subprocess: source .venv
-    try:
-        yield
-    finally:
-        # subprocess call to deactivate .venv
-        pass
+    command = f"{venv_path}/bin/python3 -m pip install -U ruff black isort pytest"
+    subprocess.run(command, shell=True, check=True)
 
-
-def find_path(search_path, search_text) -> Optional[str]:
+def find_path(current_path: Path, search_text: str) -> Optional[str]:
     '''Brute force recursive directory search'''
-
-    # get our current path and immediate parent path
-    current_path = Path(search_path)
+    # ? edge case, what happens when we're already in .venv?
     parent_path = current_path.parent
 
     print('current path', current_path)
@@ -41,6 +29,7 @@ def find_path(search_path, search_text) -> Optional[str]:
         if search_text in p:
             return p
     else:
+        # TODO seems hacky, fix this later
         home = str(current_path.home())
         # check if current parent's parent path is home or higher.
         # if it is, bail out recurssion. don't go higher than HOME dir.
@@ -48,18 +37,17 @@ def find_path(search_path, search_text) -> Optional[str]:
         if str_cur_p == home or home not in str_cur_p:
             return None
 
-        return find_path(str(parent_path.parent), search_text)
+        return find_path(parent_path.parent, search_text)
 
 
 
 def main():
-    cwd = os.getcwd()
-
-    venv_path = find_path(cwd, '.nope')
+    # TODO arg parse
+    venv_path = find_path(Path(os.getcwd()), '.venv')
 
     if venv_path:
         print('found .venv at :', venv_path)
-        update_ruff(venv_path)
+        update_venv(venv_path)
     else:
         print('.venv not found')
 
