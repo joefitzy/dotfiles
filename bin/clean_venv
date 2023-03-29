@@ -16,31 +16,28 @@ def update_venv(venv_path):
 
 def find_path(current_path: Path, search_text: str) -> Optional[str]:
     """Brute force recursive directory search"""
+
     # ? edge case, what happens when we're already in .venv?
-    parent_path = current_path.parent
-
-    print("current path", current_path)
-    print("parent path", parent_path)
-
     def gen_paths(path: Path):
         return [str(p) for p in path.iterdir()]
 
     # TODO itertools
     paths = gen_paths(current_path)
-    paths.extend(gen_paths(parent_path))
+    paths.extend(gen_paths(current_path.parent))
 
     for p in paths:
         if search_text in p:
             return p
 
     # TODO seems hacky, fix this later
+    _next = current_path.parent.parent
     # check if current parent's parent path is home or higher.
     # if it is, bail out recurssion. don't go higher than HOME dir.
-    str_cur_p = str(parent_path.parent)
-    if str_cur_p == HOME or HOME not in str_cur_p:
+    nxt_str = str(_next)
+    if nxt_str == HOME or HOME not in nxt_str:
         return None
 
-    return find_path(parent_path.parent, search_text)
+    return find_path(_next, search_text)
 
 
 def main():
