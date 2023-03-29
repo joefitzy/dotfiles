@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
-
+# import itertools
 import os
 import subprocess
 from pathlib import Path
 from typing import Optional
 
+HOME = os.path.expanduser("~")
 
-# @contextmanager
+
 def update_venv(venv_path):
     # call subprocess: source .venv
     command = f"{venv_path}/bin/python3 -m pip install -U ruff black isort pytest"
     subprocess.run(command, shell=True, check=True)
 
+
 def find_path(current_path: Path, search_text: str) -> Optional[str]:
-    '''Brute force recursive directory search'''
+    """Brute force recursive directory search"""
     # ? edge case, what happens when we're already in .venv?
     parent_path = current_path.parent
 
-    print('current path', current_path)
-    print('parent path', parent_path)
+    print("current path", current_path)
+    print("parent path", parent_path)
 
     def gen_paths(path: Path):
         return [str(p) for p in path.iterdir()]
@@ -30,28 +32,27 @@ def find_path(current_path: Path, search_text: str) -> Optional[str]:
     for p in paths:
         if search_text in p:
             return p
-    else:
-        # TODO seems hacky, fix this later
-        home = str(current_path.home())
-        # check if current parent's parent path is home or higher.
-        # if it is, bail out recurssion. don't go higher than HOME dir.
-        str_cur_p = str(parent_path.parent)
-        if str_cur_p == home or home not in str_cur_p:
-            return None
 
-        return find_path(parent_path.parent, search_text)
+    # TODO seems hacky, fix this later
+    # check if current parent's parent path is home or higher.
+    # if it is, bail out recurssion. don't go higher than HOME dir.
+    str_cur_p = str(parent_path.parent)
+    if str_cur_p == HOME or HOME not in str_cur_p:
+        return None
 
+    return find_path(parent_path.parent, search_text)
 
 
 def main():
-    # TODO arg parse
-    venv_path = find_path(Path(os.getcwd()), '.venv')
+    # TODO arg parse or typer
+    venv_path = find_path(Path(os.getcwd()), ".venv")
 
     if venv_path:
-        print('found .venv at :', venv_path)
+        print("found .venv at :", venv_path)
         update_venv(venv_path)
     else:
-        print('.venv not found')
+        print(".venv not found")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     raise SystemExit(main())
