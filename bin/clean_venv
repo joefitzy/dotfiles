@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# import itertools
+import itertools
 import os
 import subprocess
 from pathlib import Path
@@ -19,11 +19,11 @@ def find_path(current_path: Path, search_text: str) -> Optional[str]:
 
     # ? edge case, what happens when we're already in .venv?
     def gen_paths(path: Path):
-        return [str(p) for p in path.iterdir()]
+        return (str(p) for p in path.iterdir())
 
-    # TODO itertools
-    paths = gen_paths(current_path)
-    paths.extend(gen_paths(current_path.parent))
+    paths = set(
+        itertools.chain(gen_paths(current_path), gen_paths(current_path.parent))
+    )
 
     for p in paths:
         if search_text in p:
