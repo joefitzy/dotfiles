@@ -3,16 +3,28 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
+import typer  # pip3 install -U typer
+
 HOME = str(Path.home())
 CHECK = False
 
 
+def refresh_venv(path: Path):
+    print(f"Deleting venv at {path}")
+    subprocess.run(
+        f"rm -rf {path} && virtualenv -p $(pyenv version-name) {path}",
+        shell=True,
+        check=CHECK,
+    )
+
+
 def update_venv(venv_path: Path):
     # call subprocess: source .venv
-    command = (
-        f"{venv_path / 'bin' / 'python3'} -m pip install -U ruff black isort pytest"
+    path = venv_path / "bin" / "python3"
+    subprocess.run(f"{path} -m pip install -U pip", shell=True, check=CHECK)
+    subprocess.run(
+        f"{path} -m pip install -U ruff black isort pytest", shell=True, check=CHECK
     )
-    subprocess.run(command, shell=True, check=CHECK)
 
 
 def find_path(current_path: str, search_text: str) -> Optional[Path]:
@@ -37,13 +49,16 @@ def find_path(current_path: str, search_text: str) -> Optional[Path]:
         cur = cur.parent
 
 
-def main():
+def main(refresh: bool = False):
     try:
         # TODO arg parse or typer
         venv_path = find_path(str(Path.cwd()), ".venv")
 
         if venv_path:
             print("found .venv at :", venv_path)
+            if refresh:
+                refresh_venv(venv_path)
+
             update_venv(venv_path)
         else:
             print(".venv not found")
@@ -53,4 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    typer.run(main)
