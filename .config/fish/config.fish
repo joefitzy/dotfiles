@@ -94,6 +94,8 @@ if status is-interactive
         abbr -a ll 'ls -lhAF'
     end
 
+    abbr -a tf 'terraform'
+
     # Git abbr's
     abbr -a ga 'git add'
     abbr -a gaa 'git add -A'
