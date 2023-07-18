@@ -129,7 +129,7 @@ if status is-interactive
     abbr -a glv 'git pull && git diff ORIG_HEAD..'
 
     abbr -a gp 'git push'
-    abbr -a gpu 'git push -u origin'
+    abbr -a gpu 'git push -u origin HEAD'
     abbr -a gpum 'git push -u origin main'
 
     abbr -a gs 'git status -s'
