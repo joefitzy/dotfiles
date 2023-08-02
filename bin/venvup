@@ -35,8 +35,8 @@ def find_path(current_path: str, search_text: str) -> Optional[Path]:
 
     cur = Path(current_path)
     while True:
-        # bail iterating if we are at $HOME or root
         str_p = str(cur)
+        # end iterating if we are at $HOME or root
         if str_p == HOME or str_p == "/":
             return None
 
