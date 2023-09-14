@@ -96,6 +96,8 @@ if status is-interactive
 
     abbr -a tf 'terraform'
 
+    abbr -a yarnuke 'rm -rf .cache build node_modules public/build tsconfig.tsbuildinfo yarn.lock package-lock.json && yarn && yarn fix && yarn lint'
+
     # Git abbr's
     abbr -a ga 'git add'
     abbr -a gaa 'git add -A'
