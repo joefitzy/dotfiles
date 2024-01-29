@@ -116,7 +116,7 @@ if status is-interactive
     abbr -a gcl 'git clean -fdx'
 
     abbr -a gcm 'git commit -m'
-    abbr -a gcam 'git commit -am'
+    abbr -a gcam 'git commit -a -m'
 
     abbr -a gd 'git diff'
     abbr -a gds 'git diff --staged'
