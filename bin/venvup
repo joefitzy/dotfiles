@@ -23,7 +23,7 @@ def update_venv(venv_path: Path):
     path = venv_path / "bin" / "python3"
     subprocess.run(f"{path} -m pip install -U pip", shell=True, check=CHECK)
     subprocess.run(
-        f"{path} -m pip install -U ruff black isort pytest", shell=True, check=CHECK
+        f"{path} -m pip install -U ruff black isort pytest pytest-cov", shell=True, check=CHECK
     )
 
 
