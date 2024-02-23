@@ -2,6 +2,7 @@
 --ignore \*.md
 --ignore .DS_Store
 --ignore .gitignore
+--ignore .python-version
 --ignore .stowrc
 --ignore \.gitkeep
 --ignore ^iterm_presets

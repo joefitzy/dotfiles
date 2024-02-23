@@ -3,27 +3,31 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-import typer  # pip3 install -U typer
+import typer  # pip3 install -U typer[all]
 
-HOME = str(Path.home())
-CHECK = False
+HOME_PATH = str(Path.home())
+CHECK_SUB_SHELL_PROCESS = False
 
 
-def refresh_venv(path: Path):
+def replace_venv(path: Path) -> None:
     print(f"Deleting venv at {path}")
     subprocess.run(
         f"rm -rf {path} && virtualenv -p $(pyenv version-name) {path}",
         shell=True,
-        check=CHECK,
+        check=CHECK_SUB_SHELL_PROCESS,
     )
 
 
-def update_venv(venv_path: Path):
+def update_pip_and_extras(venv_path: Path) -> None:
     # call subprocess: source .venv
     path = venv_path / "bin" / "python3"
-    subprocess.run(f"{path} -m pip install -U pip", shell=True, check=CHECK)
     subprocess.run(
-        f"{path} -m pip install -U ruff black isort pytest pytest-cov", shell=True, check=CHECK
+        f"{path} -m pip install -U pip", shell=True, check=CHECK_SUB_SHELL_PROCESS
+    )
+    subprocess.run(
+        f"{path} -m pip install -U ruff black isort pytest pytest-cov",
+        shell=True,
+        check=CHECK_SUB_SHELL_PROCESS,
     )
 
 
@@ -37,7 +41,7 @@ def find_path(current_path: str, search_text: str) -> Optional[Path]:
     while True:
         str_p = str(cur)
         # end iterating if we are at $HOME or root
-        if str_p == HOME or str_p == "/":
+        if str_p == HOME_PATH or str_p == "/":
             return None
 
         # Get everything in the current directory
@@ -49,22 +53,24 @@ def find_path(current_path: str, search_text: str) -> Optional[Path]:
         cur = cur.parent
 
 
-def main(refresh: bool = False):
+def main(replace: bool = False) -> int:
     try:
         # TODO arg parse or typer
         venv_path = find_path(str(Path.cwd()), ".venv")
-
-        if venv_path:
-            print("found .venv at :", venv_path)
-            if refresh:
-                refresh_venv(venv_path)
-
-            update_venv(venv_path)
-        else:
+        if not venv_path:
             print(".venv not found")
+            return 1
+
+        print("found .venv at :", venv_path)
+        if replace:
+            replace_venv(venv_path)
+
+        update_pip_and_extras(venv_path)
     except KeyboardInterrupt:
         print("Keyboard Interrupt sent! Stopping process.")
-        pass
+        return 1
+
+    return 0
 
 
 if __name__ == "__main__":
